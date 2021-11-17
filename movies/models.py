@@ -17,4 +17,3 @@ class Review(models.Model):
     rank = models.IntegerField()
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
