@@ -6,7 +6,7 @@ from .serializers import PostSerializer, CommentSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
-@api_view(['GET'])
+@api_view(['GET','POST'])
 def post_list_create(request):
     if request.method =="GET":
         posts = get_list_or_404(Post)
@@ -15,7 +15,7 @@ def post_list_create(request):
     elif request.method == "POST":
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save(user=request.user)
+            serializer.save(user=request.user.username)
             return Response(serializer.data, status= status.HTTP_201_CREATED)
 
 @api_view(['GET','PUT','DELETE'])

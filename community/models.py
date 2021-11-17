@@ -15,3 +15,4 @@ class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     review = models.ForeignKey(Post, on_delete=models.CASCADE)
 
+    
