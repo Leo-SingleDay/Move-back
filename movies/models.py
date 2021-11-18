@@ -6,10 +6,11 @@ class Genre(models.Model):
 
 class Movie(models.Model):
     title = models.CharField(max_length=100)
-    overview = models.TextField()
-    genres = models.ManyToManyField(Genre, related_name="movie")
-    poster_path = models.CharField(max_length=200)
     release_date = models.DateField()
+    popularity = models.FloatField()
+    overview = models.TextField()
+    poster_path = models.CharField(max_length=200)
+    genres = models.ManyToManyField(Genre, related_name="movie")
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies')
 
 class Review(models.Model):
