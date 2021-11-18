@@ -9,19 +9,22 @@ from rest_framework import status
 @api_view(['GET','POST'])
 def post_list_create(request):
     if request.method =="GET":
-        posts = get_list_or_404(Post)
+        posts = get_list_or_404(Post.objects.order_by('-pk'))
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == "POST":
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save(user=request.user.username)
+            print(request.user)
+            serializer.save(user=request.user)
             return Response(serializer.data, status= status.HTTP_201_CREATED)
 
 @api_view(['GET','PUT','DELETE'])
 def post_detail_delete_update(request, post_pk):
     post = get_object_or_404(Post, pk = post_pk)
     if request.method == "GET":
+        post.view_count = post.view_count + 1
+        post.save()
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == "DELETE":

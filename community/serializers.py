@@ -6,12 +6,13 @@ class CommentSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Comment
-        fields = ('content', 'created_at', 'updated_at', 'review', 'user')
+        fields = ('id','content', 'created_at', 'updated_at', 'review', 'user')
 
 class PostSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
-    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M")
     
     class Meta:
         model = Post
-        fields = ('title', 'content', 'created_at', 'updated_at', 'user', 'username')
+        fields = '__all__'
+        read_only_fields = ('user',)
+        

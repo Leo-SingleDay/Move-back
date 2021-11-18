@@ -1,22 +1,30 @@
-from django.http.response import JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout as auth_logout
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST, require_http_methods
-from .forms import CustomUserCreationForm
+from rest_framework import serializers, status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+
+from .serialzers import UserSerializer
 
 
-@require_http_methods(['GET', 'POST'])
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def signup(request):
-    pass
+    password = request.data.get('password')
+    passwordConfirmation = request.data.get('passwordConfirmation')
 
-@require_http_methods(['GET', 'POST'])
+    if password != passwordConfirmation:
+        return Response({'error' : '비밀번호가 일치하지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = UserSerializer(data=request.data)
+
+    if serializer.is_valid(raise_exception=True):
+        user = serializer.save()
+        user.set_password(request.data.get('password'))
+        user.save()
+        return Response(serializer.data, status = status.HTTP_201_CREATED)
+
 def login(request):
     pass
 
-@require_POST
 def logout(request):
     pass
