@@ -6,14 +6,33 @@ from .models import Movie, Review
 
 from .serializers import MovieSerializer, ReviewSerializer
 
-@api_view(['GET','POST'])
+@api_view(['GET'])
 def index(request):
     if request.method == 'GET':
         movies = get_list_or_404(Movie)
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data)
-    elif request.method == 'POST':
-        pass
+
+@api_view(['GET'])
+def recommend_list(request):
+    if request.method == 'GET':
+        movies = Movie.objects.all().order_by('?')[:10]
+        serializer = MovieSerializer(movies, many=True)
+        return Response(serializer.data)
+
+@api_view(['GET'])
+def popularity_list(request):
+    if request.method == 'GET':
+        movies = Movie.objects.all().order_by('-popularity')[:10]
+        serializer = MovieSerializer(movies, many=True)
+        return Response(serializer.data)
+
+@api_view(['GET'])
+def latest_list(request):
+    if request.method == 'GET':
+        movies = Movie.objects.all().order_by('-release_date')[:10]
+        serializer = MovieSerializer(movies, many=True)
+        return Response(serializer.data)
 
 @api_view(['GET'])
 def detail(request, movie_pk):
