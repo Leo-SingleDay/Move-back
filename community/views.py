@@ -26,7 +26,8 @@ def post_detail_delete_update(request, post_pk):
     if request.user == post.user:
         isSameUser = True
     if request.method == "GET":
-        comments = get_list_or_404(Comment, post = post_pk)
+        print('여기까진 괜찮아')
+        comments = post.comment_set.all()
         post.view_count = post.view_count + 1
         post.save()
         serializer = PostSerializer(post)
