@@ -1,3 +1,4 @@
+from django.http.response import HttpResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, render, redirect
 from django.views.decorators.http import require_safe
 from rest_framework.decorators import api_view
@@ -15,31 +16,39 @@ def post_list_create(request):
     elif request.method == "POST":
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            print(request.user)
             serializer.save(user=request.user)
             return Response(serializer.data, status= status.HTTP_201_CREATED)
 
 @api_view(['GET','PUT','DELETE'])
 def post_detail_delete_update(request, post_pk):
     post = get_object_or_404(Post, pk = post_pk)
+    isSameUser = False
+    if request.user == post.user:
+        isSameUser = True
     if request.method == "GET":
+        comments = get_list_or_404(Comment, post = post_pk)
         post.view_count = post.view_count + 1
         post.save()
         serializer = PostSerializer(post)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        commentSerializer = CommentSerializer(comments, many=True)
+        return Response({'data' : serializer.data, 'isSameUser': isSameUser, 'comments' : commentSerializer.data}, status=status.HTTP_200_OK)
     elif request.method == "DELETE":
-        post.delete()
-        return Response(status= status.HTTP_204_NO_CONTENT)
+        if request.user == post.user:
+            post.delete()
+            return Response(status= status.HTTP_204_NO_CONTENT)
     elif request.method == "PUT":
-        serializer = PostSerializer(post, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        if request.user == post.user:
+            serializer = PostSerializer(post, data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response({'data' : serializer.data, 'isSameUser': isSameUser}, status=status.HTTP_200_OK)
 
-@api_view(['GET'])
-def comment_create(request):
+@api_view(['POST'])
+def comment_create(request, post_pk):
     serializer = CommentSerializer(data=request.data)
+    post = get_object_or_404(Post, pk = post_pk)
     if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user, post= post)
         return Response(serializer.data, status= status.HTTP_201_CREATED)
 
 
