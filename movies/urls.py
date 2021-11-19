@@ -17,7 +17,6 @@ urlpatterns = [
 
 
     # 영화 리뷰
-    path('reviews/', views.review_list),
     path('reviews/<int:review_pk>/', views.review_detail_update_delete, name='review'),
-    path('<int:movie_pk>/reviews/', views.review_create)
+    path('<int:movie_pk>/reviews/', views.review_get_create)
 ]
