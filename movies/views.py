@@ -40,12 +40,6 @@ def detail(request, movie_pk):
     serializer = MovieSerializer(movie)
     return Response(serializer.data)
 
-@api_view(['GET'])
-def review_list(request):
-    reviews = get_list_or_404(Review)
-    serializer = ReviewSerializer(reviews, many=True)
-    return Response(serializer.data)
-
 @api_view(['GET','PUT', 'DELETE'])
 def review_detail_update_delete(request, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
@@ -64,10 +58,15 @@ def review_detail_update_delete(request, review_pk):
         }
         return Response(data, status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['POST'])
-def review_create(request, movie_pk):
-    movie = get_object_or_404(Review, pk=movie_pk)
-    serializer = ReviewSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        serializer.save(movie=movie)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+@api_view(['GET', 'POST'])
+def review_get_create(request, movie_pk):
+    if request.method == 'GET':
+        reviews = Review.objects.all().filter(movie_id=movie_pk)
+        serializer = ReviewSerializer(reviews, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        movie = get_object_or_404(Movie, pk=movie_pk)
+        serializer = ReviewSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(user=request.user, movie=movie)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
