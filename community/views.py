@@ -26,8 +26,10 @@ def post_detail_delete_update(request, post_pk):
     if request.user == post.user:
         isSameUser = True
     if request.method == "GET":
-        print('여기까진 괜찮아')
         comments = post.comment_set.all()
+        for comment in comments:
+            if comment.user == request.user:
+                comment.isSameUser = True
         post.view_count = post.view_count + 1
         post.save()
         serializer = PostSerializer(post)
@@ -54,7 +56,7 @@ def comment_create(request, post_pk):
 
 
 @api_view(['PUT','DELETE'])
-def comment_update_delete(request, comment_pk):
+def comment_update_delete(request, comment_pk, post_pk):
     comment = get_object_or_404(Comment, pk = comment_pk)
     if request.method == "PUT":
         serialzer = CommentSerializer(comment, data=request.data)
