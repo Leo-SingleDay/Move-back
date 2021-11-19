@@ -4,7 +4,7 @@ from .models import Post,Comment
 
 class CommentSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
-
+    isSameUser = serializers.ReadOnlyField(default=False)
     class Meta:
         model = Comment
         fields = '__all__'
