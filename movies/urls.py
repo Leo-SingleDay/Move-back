@@ -14,8 +14,8 @@ urlpatterns = [
     path('popularity/', views.popularity_list, name="popularity"),
     # 해당 영화 상세정보
     path('<int:movie_pk>/', views.detail, name='detail'),
-
-
+    # 영화 좋아요
+    path('<int:movie_pk>/like/', views.like, name='like'),
     # 영화 리뷰
     path('reviews/<int:review_pk>/', views.review_detail_update_delete, name='review'),
     path('<int:movie_pk>/reviews/', views.review_get_create)
