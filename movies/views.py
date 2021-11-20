@@ -1,9 +1,9 @@
-from rest_framework import serializers, status
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.shortcuts import get_list_or_404, get_object_or_404
 from .models import Movie, Review
-
+from django.views.decorators.http import require_POST
 from .serializers import MovieSerializer, ReviewSerializer
 
 @api_view(['GET'])
@@ -70,3 +70,18 @@ def review_get_create(request, movie_pk):
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=request.user, movie=movie)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['POST'])
+def like(request, movie_pk):
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    if movie.like_users.filter(pk=request.user.pk).exists():
+        movie.like_users.remove(request.user)
+        like = False
+    else:
+        movie.like_users.add(request.user)
+        like = True
+    context = {
+        'like': like,
+        'count': movie.like_users.count()
+    }
+    return Response(context)
