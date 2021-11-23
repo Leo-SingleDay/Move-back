@@ -2,14 +2,21 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.shortcuts import get_list_or_404, get_object_or_404
-from .models import Movie, Review
-from .serializers import MovieSerializer, ReviewSerializer
+from .models import Movie, Review, EventMovie
+from .serializers import MovieSerializer, ReviewSerializer, EventMovieSerializer
 
 @api_view(['GET'])
 def index(request):
     if request.method == 'GET':
         movies = get_list_or_404(Movie)
         serializer = MovieSerializer(movies, many=True)
+        return Response(serializer.data)
+
+@api_view(['GET'])
+def event(request):
+    if request.method == 'GET':
+        movies = get_list_or_404(EventMovie)
+        serializer = EventMovieSerializer(movies, many=True)
         return Response(serializer.data)
 
 @api_view(['GET'])
