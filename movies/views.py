@@ -6,9 +6,9 @@ from .models import Movie, Review, EventMovie
 from .serializers import MovieSerializer, ReviewSerializer, EventMovieSerializer
 
 @api_view(['GET'])
-def index(request):
+def all_list(request):
     if request.method == 'GET':
-        movies = get_list_or_404(Movie)
+        movies = Movie.objects.all().order_by('?')
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data)
 
@@ -127,3 +127,25 @@ def like(request, movie_pk):
         'count': movie.like_users.count()
     }
     return Response(context)
+
+@api_view(['GET'])
+def like_genres(request):
+    if request.method == 'GET':
+        user = request.user
+        like_movies = user.like_movies.all()
+        context = {}
+        for movie in like_movies:
+            for genre in movie.genres.all():
+                if genre.name not in context:
+                    context[genre.name] = 1
+                else:
+                    context[genre.name] += 1
+        return Response(context)
+
+@api_view(['GET'])
+def like_movies(request):
+    if request.method == 'GET':
+        user = request.user
+        like_movies = user.like_movies.all()
+        serializer = MovieSerializer(like_movies, many=True)
+        return Response(serializer.data)

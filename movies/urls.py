@@ -5,7 +5,7 @@ app_name = "movies"
 
 urlpatterns = [
     # 영화전체리스트
-    path('', views.index, name="index"),
+    path('', views.all_list, name="all"),
     # 이벤트 영화리스트
     path('event/', views.event, name="event"),
     # 추천리스트
@@ -20,5 +20,8 @@ urlpatterns = [
     path('<int:movie_pk>/like/', views.like, name='like'),
     # 영화 리뷰
     path('reviews/<int:review_pk>/', views.review_detail_update_delete, name='review'),
-    path('<int:movie_pk>/reviews/', views.review_get_create)
+    path('<int:movie_pk>/reviews/', views.review_get_create),
+    # 유저 영화 정보
+    path('like-genres/', views.like_genres),
+    path('like-movies/', views.like_movies),
 ]
