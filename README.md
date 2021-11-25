@@ -67,6 +67,14 @@
 
 -----
 
+
+
+![img](https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white)![img](https://img.shields.io/badge/vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=black)![img](https://img.shields.io/badge/Vuetify-1867C0?style=for-the-badge&logo=vuetify&logoColor=white)![img](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=Visual%20Studio%20Code&logoColor=white)![img](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=Django&logoColor=white)
+
+-----
+
+
+
 - Windows OS x64
 - Django 3.2.9
 - Python 3.9.6
